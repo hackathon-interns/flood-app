@@ -52,16 +52,12 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   const navigation = useNavigation();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
+        <ThemeProvider value={DefaultTheme}>
           <Drawer
             screenOptions={{
               headerShown: true,
@@ -83,7 +79,7 @@ function RootLayoutNav() {
                         marginLeft: 24,
                       }}
                     >
-                      <Ionicons name="menu" size={36} color="black" />
+                      <Ionicons name="menu" size={36} color="white" />
                     </View>
                   )}
                 </Pressable>
@@ -107,7 +103,7 @@ function RootLayoutNav() {
                       <MaterialIcons
                         name="add-location"
                         size={36}
-                        color="black"
+                        color="white"
                       />
                     </View>
                   )}

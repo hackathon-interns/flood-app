@@ -8,23 +8,11 @@ import { View, Button } from "tamagui";
 import MapView from "react-native-maps";
 
 export default function HomeScreen() {
-  // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    map: {
-      width: "100%",
-      height: "100%",
-    },
-  });
 
   return (
     <View
@@ -32,7 +20,15 @@ export default function HomeScreen() {
         flex: 1,
       }}
     >
-      <MapView style={styles.map} />
+      <MapView
+        style={styles.map}
+        region={{
+          latitude: -23.5505,
+          longitude: -47.60013,
+          latitudeDelta: 0.08,
+          longitudeDelta: 0.08,
+        }}
+      />
       <BottomSheet
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
@@ -45,3 +41,13 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+});
