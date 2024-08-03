@@ -1,7 +1,7 @@
 import "../tamagui-web.css";
 
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { Pressable, useColorScheme } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,6 +12,11 @@ import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "@/providers/Provider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "expo-router";
+import { View } from "tamagui";
+import { DrawerActions } from "@react-navigation/native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,7 +25,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.'
-  initialRouteName: "(tabs)",
+  initialRouteName: "index",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -49,32 +54,69 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  const navigation = useNavigation();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          {/* <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                headerShown: false,
-              }}
-            />
-
-            <Stack.Screen
-              name="modal"
-              options={{
-                title: "Tamagui + Expo",
-                presentation: "modal",
-                animation: "slide_from_right",
-                gestureEnabled: true,
-                gestureDirection: "horizontal",
-              }}
-            />
-          </Stack> */}
-          <Drawer screenOptions={{ headerShown: false }}>
+          <Drawer
+            screenOptions={{
+              headerShown: true,
+              headerTransparent: true,
+              headerTitleStyle: { display: "none" },
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => {
+                    navigation.dispatch(DrawerActions.toggleDrawer());
+                  }}
+                >
+                  {({ pressed }) => (
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1000,
+                        opacity: pressed ? 0.5 : 1,
+                        marginLeft: 24,
+                      }}
+                    >
+                      <Ionicons name="menu" size={36} color="black" />
+                    </View>
+                  )}
+                </Pressable>
+              ),
+              headerRight: () => (
+                <Pressable
+                  onPress={() => {
+                    console.log("ADICIONAR ESTAÇÃO");
+                  }}
+                >
+                  {({ pressed }) => (
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1000,
+                        opacity: pressed ? 0.5 : 1,
+                        marginRight: 24,
+                      }}
+                    >
+                      <MaterialIcons
+                        name="add-location"
+                        size={36}
+                        color="black"
+                      />
+                    </View>
+                  )}
+                </Pressable>
+              ),
+              swipeEnabled: false,
+              sceneContainerStyle: { backgroundColor: "black" },
+            }}
+          >
             <Drawer.Screen
               name="index" // This is the name of the page and must match the url from root
               options={{
