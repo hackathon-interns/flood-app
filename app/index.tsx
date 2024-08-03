@@ -5,6 +5,8 @@ import { useCallback, useRef } from "react";
 
 import { View, Button } from "tamagui";
 
+import MapView from "react-native-maps";
+
 export default function HomeScreen() {
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -14,13 +16,23 @@ export default function HomeScreen() {
     console.log("handleSheetChanges", index);
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    map: {
+      width: "100%",
+      height: "100%",
+    },
+  });
+
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: "green",
       }}
     >
+      <MapView style={styles.map} />
       <BottomSheet
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
