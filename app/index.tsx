@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MapView, Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 
 import * as Location from "expo-location";
 
