@@ -1,13 +1,25 @@
 import { StyleSheet } from "react-native";
+import { useCallback, useEffect, useRef } from "react";
+import MapView from "react-native-maps";
+
+import * as Location from "expo-location";
 
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useCallback, useRef } from "react";
 
 import { View, Button } from "tamagui";
 
-import MapView from "react-native-maps";
-
 export default function HomeScreen() {
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
+      }
+    })();
+  }, []);
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const handleSheetChanges = useCallback((index: number) => {
