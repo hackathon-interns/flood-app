@@ -74,7 +74,6 @@ const Signup = () => {
         onPress={handleLogin}
         buttonStyle={styles.button}
       />
-      <Text style={styles.registerText}>Não tem uma conta? Registrar-se</Text>
     </View>
   );
 };
