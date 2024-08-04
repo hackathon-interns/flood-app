@@ -1,18 +1,18 @@
 import { Pressable, StyleSheet } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import MapView from "react-native-maps";
+import MapView, { Region, Marker } from "react-native-maps";
 
 import * as Location from "expo-location";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 import BottomSheet, {
   BottomSheetView,
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
 
-import { View, Paragraph, Text, H3, H4 } from "tamagui";
+import { View, Paragraph, Text, H3, H4, Button, Tooltip } from "tamagui";
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { WaterLevelStatus } from "@/enums/WaterLevelStatus";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -23,8 +23,13 @@ import Reanimated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { MapPin } from "@tamagui/lucide-icons";
 
 export default function HomeScreen() {
+  const [mapLocation, setMapLocation] = useState<Region>();
+  const LATITUDE_DELTA = 0.0922;
+  const LONGITUDE_DELTA = 0.0421;
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -32,6 +37,9 @@ export default function HomeScreen() {
         console.error("Permission to access location was denied");
         return;
       }
+
+      let currentLocation = await getCurrentLocation();
+      setMapLocation(currentLocation);
     })();
   }, []);
 
@@ -94,12 +102,45 @@ export default function HomeScreen() {
     },
   ]);
 
+  async function getCurrentLocation() {
+    let currentLocation = await Location.getCurrentPositionAsync();
+
+    let location: Region = {
+      latitudeDelta: LATITUDE_DELTA,
+      latitude: currentLocation.coords.latitude,
+      longitudeDelta: LONGITUDE_DELTA,
+      longitude: currentLocation.coords.longitude,
+    };
+
+    return location;
+  }
+
+  async function goToCurrenLocation() {
+    let currentLocation = await getCurrentLocation();
+    setMapLocation(currentLocation);
+  }
+
+  // ref
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
+  const [markers, setMarkers] = useState([
+    {
+      title: "hello",
+      description: "world",
+      latlng: { latitude: -23.5105, longitude: -47.60213 },
+    },
+    {
+      title: "hello2",
+      description: "world",
+      latlng: { latitude: -23.5105, longitude: -47.61513 },
+    },
+  ]);
   return (
     <View
       style={{
@@ -108,13 +149,38 @@ export default function HomeScreen() {
     >
       <MapView
         style={styles.map}
-        region={{
-          latitude: -23.5505,
-          longitude: -47.60013,
-          latitudeDelta: 0.08,
-          longitudeDelta: 0.08,
-        }}
-      />
+        mapType="standard"
+        userInterfaceStyle="light"
+        region={mapLocation}
+      >
+        {markers.map((marker, index) => (
+          <Marker
+            key={index}
+            coordinate={marker.latlng}
+            title={marker.title}
+            description={marker.description}
+          >
+            <FontAwesome6
+              name="house-flood-water"
+              size={26}
+              color="dodgerblue"
+            />
+          </Marker>
+        ))}
+      </MapView>
+
+      <View style={styles.tooltipContainer}>
+        <Tooltip placement="right-end">
+          <Button
+            theme="blue"
+            icon={MapPin}
+            color="white"
+            circular
+            onPress={goToCurrenLocation}
+          />
+        </Tooltip>
+      </View>
+
       <BottomSheet
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
@@ -221,6 +287,11 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+  },
+  tooltipContainer: {
+    position: "absolute",
+    bottom: 200,
+    right: 20,
   },
 });
 

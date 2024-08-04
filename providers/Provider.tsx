@@ -8,7 +8,7 @@ export function Provider({
   ...rest
 }: Omit<TamaguiProviderProps, "config">) {
   return (
-    <TamaguiProvider config={config} defaultTheme="light" {...rest}>
+    <TamaguiProvider config={config} defaultTheme="dark" {...rest}>
       <ToastProvider
         swipeDirection="horizontal"
         duration={6000}
