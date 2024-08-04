@@ -5,8 +5,15 @@ import { Text } from "@rneui/base";
 import { Button, Input } from "@rneui/themed";
 import ImageInput from "./ImageInput";
 import { View } from "react-native";
+import { useState } from "react";
 
-export default function BottomSheetAddStationContent() {
+type BottomSheetAddStationContentProps = {
+  currentUserLocation: any;
+};
+
+export default function BottomSheetAddStationContent({
+  currentUserLocation,
+}: BottomSheetAddStationContentProps) {
   const {
     image: image1,
     isLoadingImage: isLoadingImage1,
@@ -18,14 +25,28 @@ export default function BottomSheetAddStationContent() {
     generateChangeImageAlert: generateChangeImageAlert2,
   } = useImagePicker([4, 3]);
 
+  const [stationName, setStationName] = useState("");
+
   const handleSubmit = async () => {
     try {
-      // await api.post("/devices", {
-      // })
+      const formData = new FormData();
+
+      formData.append("name", stationName);
+      formData.append("user", "35fca86f-2d85-4b75-87c7-e7d32f8354ba");
+      formData.append("identifier", "ABC");
+      formData.append("longitude", currentUserLocation?.coords.longitude);
+      formData.append("latitude", currentUserLocation?.coords.latitude);
+      formData.append("front_photo", image1 as string);
+      formData.append("side_photo", image2 as string);
+
+      await api.post("/devices/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     } catch (error) {
-      console.error("ERRO:", error);
+      console.log("ERRO:", error.response?.data);
     }
-    console.log("submitting");
   };
 
   return (
@@ -43,7 +64,11 @@ export default function BottomSheetAddStationContent() {
       >
         Adicione uma nova estação de monitoramento de nível de água
       </Text>
-      <Input placeholder="Nome da estação" />
+      <Input
+        placeholder="Nome da estação"
+        value={stationName}
+        onChangeText={setStationName}
+      />
       <Text
         style={{
           fontSize: 16,
@@ -51,7 +76,7 @@ export default function BottomSheetAddStationContent() {
         }}
       >
         Envie uma imagem frontal e uma lateral do dispositivo para comprovar sua
-        validade
+        validade:
       </Text>
       <View
         style={{
@@ -78,6 +103,7 @@ export default function BottomSheetAddStationContent() {
         style={{
           marginTop: 16,
         }}
+        onPress={handleSubmit}
       >
         Enviar para a moderação
       </Button>

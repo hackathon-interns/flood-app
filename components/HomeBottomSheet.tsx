@@ -22,10 +22,11 @@ import BottomSheetAddStationContent from "./BottomSheetAddContent";
 type HomeBottomSheetProps = {
   favoriteStations: any[];
   isCreating: boolean;
+  currentUserLocation: any;
 };
 
 export default forwardRef(function HomeBottomSheet(
-  { favoriteStations, isCreating }: HomeBottomSheetProps,
+  { favoriteStations, isCreating, currentUserLocation }: HomeBottomSheetProps,
   bottomSheetRef: any
 ) {
   return (
@@ -37,7 +38,9 @@ export default forwardRef(function HomeBottomSheet(
       }}
     >
       {isCreating ? (
-        <BottomSheetAddStationContent />
+        <BottomSheetAddStationContent
+          currentUserLocation={currentUserLocation}
+        />
       ) : favoriteStations.length > 0 ? (
         <BottomSheetFlatList
           data={favoriteStations}
@@ -83,6 +86,7 @@ export default forwardRef(function HomeBottomSheet(
                   {({ pressed }) => (
                     <View
                       style={{
+                        height: 60,
                         flexDirection: "row",
                         gap: 4,
                         justifyContent: "space-between",
