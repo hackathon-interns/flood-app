@@ -23,6 +23,7 @@ export default function HomeScreen() {
   const LONGITUDE_DELTA = 0.0421;
   const navigation = useNavigation();
   const [currentUserLocation, setCurrentUserLocation] = useState<any>();
+  const [initialRegion, setInitialRegion] = useState<Region>();
   const [mapLocation, setMapLocation] = useState<Region>();
   const [selectDevice, setSelectedDevice] = useState<any>();
   const [markers, setMarkers] = useState<any>([
@@ -51,6 +52,15 @@ export default function HomeScreen() {
         console.error("Permission to access location was denied");
         return;
       }
+
+      const firstPosition = await Location.getCurrentPositionAsync();
+
+      setInitialRegion({
+        latitude: firstPosition?.coords.latitude,
+        longitude: firstPosition?.coords.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      });
 
       locationSubscription = await Location.watchPositionAsync(
         locationOptions,
@@ -178,20 +188,13 @@ export default function HomeScreen() {
     },
   ]);
 
-  async function setCurrentLocation(teste: any) {
-    let location: Region = {
+  async function goToCurrentLocation() {
+    setMapLocation({
+      latitude: currentUserLocation?.coords.latitude,
       latitudeDelta: LATITUDE_DELTA,
-      latitude: teste?.coords.latitude,
+      longitude: currentUserLocation?.coords.longitude,
       longitudeDelta: LONGITUDE_DELTA,
-      longitude: teste?.coords.longitude,
-    };
-
-    return location;
-  }
-
-  async function goToCurrenLocation() {
-    let currentLocation = await setCurrentLocation(currentUserLocation);
-    setMapLocation(currentLocation);
+    });
   }
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -211,11 +214,12 @@ export default function HomeScreen() {
         mapType="standard"
         userInterfaceStyle="light"
         region={mapLocation}
+        initialRegion={initialRegion}
       >
         {markers.map((marker, index) => (
           <Marker
             key={index}
-            coordinate={marker.latlng}
+            coordinate={marker?.latlng}
             onPress={() => onSelectMarker(marker.device)}
           >
             <FontAwesome6
@@ -234,7 +238,7 @@ export default function HomeScreen() {
             icon={MapPin}
             color="white"
             circular
-            onPress={goToCurrenLocation}
+            onPress={goToCurrentLocation}
           />
         </Tooltip>
       </View>
