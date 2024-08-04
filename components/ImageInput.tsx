@@ -4,7 +4,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Ionicons } from "@expo/vector-icons";
 
 type ImageInputProps = {
-  image?: string;
+  image?: any;
   isLoadingImage: boolean;
   hasImage: boolean;
   generateChangeImageAlert: () => void;
@@ -34,7 +34,7 @@ export default function ImageInput({
       {hasImage ? (
         <>
           <Image
-            source={image}
+            source={image.uri}
             style={{
               width,
               height,

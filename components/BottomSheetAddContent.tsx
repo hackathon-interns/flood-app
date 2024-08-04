@@ -33,11 +33,19 @@ export default function BottomSheetAddStationContent({
 
       formData.append("name", stationName);
       formData.append("user", "35fca86f-2d85-4b75-87c7-e7d32f8354ba");
-      formData.append("identifier", "ABC");
+      formData.append("identifier", "wences");
       formData.append("longitude", currentUserLocation?.coords.longitude);
       formData.append("latitude", currentUserLocation?.coords.latitude);
-      formData.append("front_photo", image1 as string);
-      formData.append("side_photo", image2 as string);
+      formData.append("front_photo", {
+        uri: image1.uri,
+        type: image1.type,
+        name: image1.fileName,
+      });
+      formData.append("side_photo", {
+        uri: image2.uri,
+        type: image2.type,
+        name: image2.fileName,
+      });
 
       await api.post("/devices/", formData, {
         headers: {

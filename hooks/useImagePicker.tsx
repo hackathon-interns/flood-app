@@ -4,7 +4,7 @@ import * as Linking from "expo-linking";
 import { useState } from "react";
 
 export default function useImagePicker(aspectRatio: [number, number] = [4, 3]) {
-  const [image, setImage] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<any>(undefined);
   const [isLoadingImage, setIsLoadingImage] = useState(false);
 
   const [cameraStatus, requestCameraPermission] =
@@ -30,7 +30,7 @@ export default function useImagePicker(aspectRatio: [number, number] = [4, 3]) {
         });
 
         if (!result.canceled) {
-          setImage(result.assets[0].uri);
+          setImage(result.assets[0]);
         }
       } catch (error) {
         console.error(error);
@@ -64,7 +64,7 @@ export default function useImagePicker(aspectRatio: [number, number] = [4, 3]) {
         });
 
         if (!result.canceled) {
-          setImage(result.assets[0].uri);
+          setImage(result.assets[0]);
         }
       } catch (error) {
         console.error(error);
