@@ -200,8 +200,8 @@ export default function HomeScreen() {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  function onSelectMarker(device: any) {
-    setSelectedDevice(device);
+  function onSelectMarker(deviceId: any) {
+    setSelectedDevice(deviceId);
   }
 
   return (
@@ -221,7 +221,7 @@ export default function HomeScreen() {
           <Marker
             key={index}
             coordinate={marker?.latlng}
-            onPress={() => onSelectMarker(marker.device)}
+            onPress={() => onSelectMarker(marker?.id)}
           >
             <FontAwesome6
               name="house-flood-water"
@@ -243,6 +243,7 @@ export default function HomeScreen() {
       <HomeBottomSheet
         favoriteStations={favoriteStations}
         isCreating={isCreating}
+        selectDeviceId={selectDevice}
         ref={bottomSheetRef}
       />
     </View>
