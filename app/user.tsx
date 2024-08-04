@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   Label,
@@ -11,21 +10,25 @@ import {
   Text,
   SizeTokens,
 } from "tamagui";
+import api from "@/services/api";
 
 export default function UserPage() {
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    axios
-      .get(
-        "http://192.168.1.100:8080/api/users/2f7979a1-36fc-4054-833c-d6756b71e573"
-      )
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("ERRO:", error);
-      });
+    async function getUsers() {
+      try {
+        const { data } = await api.get(
+          "/users/3f3d3863-7843-4273-a786-0616ca29c2ea"
+        );
+
+        setUserData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getUsers();
   }, []);
 
   return (
