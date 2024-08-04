@@ -185,10 +185,8 @@ export default function HomeScreen() {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  function onSelectMarker(event: any) {
-    console.log(event.nativeEvent);
-    setSelectedDevice(event.nativeEvent);
-    console.log(selectDevice);
+  function onSelectMarker(device: any) {
+    setSelectedDevice(device);
   }
 
   return (
@@ -206,9 +204,8 @@ export default function HomeScreen() {
         {markers.map((marker, index) => (
           <Marker
             key={index}
-            id={marker.id}
             coordinate={marker.latlng}
-            onPress={onSelectMarker}
+            onPress={() => onSelectMarker(marker.device)}
           >
             <FontAwesome6
               name="house-flood-water"
