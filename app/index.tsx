@@ -69,7 +69,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     axios
-      .get("http://192.168.1.100:8080/api/devices")
+      .get("http://192.168.1.100:8080/api/devices/devices")
       .then((response) => {
         let markers: any[] = [];
 
@@ -77,7 +77,7 @@ export default function HomeScreen() {
           console.log(device);
           if (device.status) {
             markers.push({
-              id: device.id,
+              device: device,
               latlng: {
                 latitude: device.latitude,
                 longitude: device.longitude,
@@ -200,10 +200,8 @@ export default function HomeScreen() {
     console.log("handleSheetChanges", index);
   }, []);
 
-  function onSelectMarker(event: any) {
-    console.log(event.nativeEvent);
-    setSelectedDevice(event.nativeEvent);
-    console.log(selectDevice);
+  function onSelectMarker(device: any) {
+    setSelectedDevice(device);
   }
 
   return (
@@ -221,9 +219,8 @@ export default function HomeScreen() {
         {markers.map((marker, index) => (
           <Marker
             key={index}
-            id={marker.id}
             coordinate={marker.latlng}
-            onPress={onSelectMarker}
+            onPress={() => onSelectMarker(marker.device)}
           >
             <FontAwesome6
               name="house-flood-water"
@@ -265,7 +262,6 @@ export default function HomeScreen() {
                 <H3 color="$black1">Estações favoritas</H3>
                 <Paragraph color="$gray7">
                   Selecione uma estação para visualizar os detalhes.
-                  {selectDevice?.coordinate.latitude}
                 </Paragraph>
               </View>
             );
