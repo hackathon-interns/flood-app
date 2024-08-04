@@ -14,6 +14,9 @@ import api from "@/services/api";
 
 export default function UserPage() {
   const [userData, setUserData] = useState<any>(null);
+  const [notifyFavoriteSensors, setNotifyFavoriteSensors] =
+    useState<boolean>(false);
+  const [notifyNewStation, setNotifyNewStation] = useState<boolean>(false);
 
   useEffect(() => {
     async function getUsers() {
@@ -23,6 +26,8 @@ export default function UserPage() {
         );
 
         setUserData(data);
+        setNotifyFavoriteSensors(true);
+        setNotifyNewStation(data.notify_on_new_station || true);
       } catch (error) {
         console.error(error);
       }
@@ -32,7 +37,7 @@ export default function UserPage() {
   }, []);
 
   return (
-    <View paddingTop="$14">
+    <View paddingTop="$12" paddingHorizontal="$3">
       {userData ? (
         <>
           <View justifyContent="center" alignItems="center" gap="$2">
@@ -65,7 +70,11 @@ export default function UserPage() {
                 >
                   Notificar sensores favoritados?
                 </Label>
-                <SwitchWithLabel size="$2" defaultChecked />
+                <SwitchWithLabel
+                  size="$3"
+                  checked={notifyFavoriteSensors}
+                  onCheckedChange={setNotifyFavoriteSensors}
+                />
               </View>
 
               <View gap="$1.5">
@@ -78,8 +87,9 @@ export default function UserPage() {
                   Notificar sensores novos perto da sua área?
                 </Label>
                 <SwitchWithLabel
-                  size="$2"
-                  defaultChecked={userData.notify_on_new_station}
+                  size="$3"
+                  checked={notifyNewStation}
+                  onCheckedChange={setNotifyNewStation}
                 />
               </View>
             </XStack>
@@ -93,12 +103,20 @@ export default function UserPage() {
 
   function SwitchWithLabel(props: {
     size: SizeTokens;
-    defaultChecked?: boolean;
+    checked: boolean;
+    onCheckedChange: (checked: boolean) => void;
   }) {
     return (
       <XStack width={200} alignItems="center" gap="$4">
-        <Switch size={props.size} defaultChecked={props.defaultChecked}>
-          <Switch.Thumb animation="quicker" />
+        <Switch
+          size={props.size}
+          checked={props.checked}
+          onCheckedChange={props.onCheckedChange}
+          style={{
+            backgroundColor: props.checked ? "green" : "red",
+          }}
+        >
+          <Switch.Thumb animation="slow" />
         </Switch>
         <Separator minHeight={20} vertical />
         <Label
@@ -107,7 +125,7 @@ export default function UserPage() {
           justifyContent="flex-end"
           size={props.size}
         >
-          {props.defaultChecked ? "Sim" : "Não"}
+          {props.checked ? "Sim" : "Não"}
         </Label>
       </XStack>
     );
