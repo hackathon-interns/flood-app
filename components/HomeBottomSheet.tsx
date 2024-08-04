@@ -18,6 +18,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { forwardRef } from "react";
 import BottomSheetAddStationContent from "./BottomSheetAddContent";
+import DeviceView from "./DeviceView";
 
 type HomeBottomSheetProps = {
   favoriteStations: any[];
@@ -25,6 +26,7 @@ type HomeBottomSheetProps = {
   currentUserLocation: any;
   snapToIndex: (index: 0 | 1 | 2) => void;
   setIsCreating: (isCreating: boolean) => void;
+  selectDeviceId: string;
 };
 
 export default forwardRef(function HomeBottomSheet(
@@ -34,6 +36,7 @@ export default forwardRef(function HomeBottomSheet(
     currentUserLocation,
     snapToIndex,
     setIsCreating,
+    selectDeviceId,
   }: HomeBottomSheetProps,
   bottomSheetRef: any
 ) {
@@ -65,21 +68,29 @@ export default forwardRef(function HomeBottomSheet(
                   paddingHorizontal: 24,
                 }}
               >
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 20,
-                  }}
-                >
-                  Estações favoritas
-                </Text>
+                {selectDeviceId ? (
+                  ""
+                ) : (
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 24,
+                    }}
+                  >
+                    Estações favoritas
+                  </Text>
+                )}
                 <Text
                   style={{
                     color: "gray",
                     fontSize: 12,
                   }}
                 >
-                  Selecione uma estação para visualizar os detalhes.
+                  {selectDeviceId ? (
+                    <DeviceView selectDeviceId={selectDeviceId} />
+                  ) : (
+                    "Selecione uma estação para visualizar os detalhes."
+                  )}
                 </Text>
               </View>
             );
@@ -92,83 +103,85 @@ export default forwardRef(function HomeBottomSheet(
                 rightThreshold={40}
                 renderRightActions={RightAction}
               >
-                <Pressable onPress={() => console.log("ir para detalhes")}>
-                  {({ pressed }) => (
-                    <View
-                      style={{
-                        height: 60,
-                        flexDirection: "row",
-                        gap: 4,
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        paddingHorizontal: 24,
-                        opacity: pressed ? 0.5 : 1,
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "column",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: "black",
-                            fontSize: 16,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {item.name}
-                        </Text>
-                        <Text
-                          style={{
-                            color: "gray",
-                          }}
-                        >
-                          {item.address}
-                        </Text>
-                      </View>
-
+                {selectDeviceId ? (
+                  ""
+                ) : (
+                  <Pressable onPress={() => console.log("ir para detalhes")}>
+                    {({ pressed }) => (
                       <View
                         style={{
                           flexDirection: "row",
                           gap: 4,
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          paddingHorizontal: 24,
+                          opacity: pressed ? 0.5 : 1,
                         }}
                       >
-                        <Text
+                        <View
                           style={{
-                            color:
-                              item.waterLevelStatus >= WaterLevelStatus.Normal
-                                ? "blue"
-                                : "gray",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
                           }}
                         >
-                          <FontAwesome6 name="droplet" size={24} />
-                        </Text>
-                        <Text
+                          <Text
+                            style={{
+                              color: "black",
+                            }}
+                          >
+                            {item.name}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "gray",
+                            }}
+                          >
+                            {item.address}
+                          </Text>
+                        </View>
+
+                        <View
                           style={{
-                            color:
-                              item.waterLevelStatus >= WaterLevelStatus.Warning
-                                ? "blue"
-                                : "gray",
+                            flexDirection: "row",
+                            gap: 4,
                           }}
                         >
-                          <FontAwesome6 name="droplet" size={24} />
-                        </Text>
-                        <Text
-                          style={{
-                            color:
-                              item.waterLevelStatus >= WaterLevelStatus.Danger
-                                ? "blue"
-                                : "gray",
-                          }}
-                        >
-                          <FontAwesome6 name="droplet" size={24} />
-                        </Text>
+                          <Text
+                            style={{
+                              color:
+                                item.waterLevelStatus >= WaterLevelStatus.Normal
+                                  ? "blue"
+                                  : "gray",
+                            }}
+                          >
+                            <FontAwesome6 name="droplet" size={24} />
+                          </Text>
+                          <Text
+                            style={{
+                              color:
+                                item.waterLevelStatus >=
+                                WaterLevelStatus.Warning
+                                  ? "blue"
+                                  : "gray",
+                            }}
+                          >
+                            <FontAwesome6 name="droplet" size={24} />
+                          </Text>
+                          <Text
+                            style={{
+                              color:
+                                item.waterLevelStatus >= WaterLevelStatus.Danger
+                                  ? "blue"
+                                  : "gray",
+                            }}
+                          >
+                            <FontAwesome6 name="droplet" size={24} />
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  )}
-                </Pressable>
+                    )}
+                  </Pressable>
+                )}
               </ReanimatedSwipeable>
             );
           }}
