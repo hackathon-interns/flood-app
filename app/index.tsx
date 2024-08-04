@@ -199,6 +199,7 @@ export default function HomeScreen() {
 
   function closeDevice() {
     setSelectedDevice(null);
+    setIsCreating(false);
   }
 
   const bottomSheetRef = useRef<BottomSheet>(null);
