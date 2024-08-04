@@ -16,7 +16,7 @@ import { MapPin } from "@tamagui/lucide-icons";
 import { useNavigation } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HomeBottomSheet from "@/components/HomeBottomSheet";
-import axios from "axios";
+import api from "@/services/api";
 
 export default function HomeScreen() {
   const LATITUDE_DELTA = 0.0922;
@@ -57,27 +57,29 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get("http://192.168.1.100:8080/api/devices")
-      .then((response) => {
-        let markers: any[] = [];
+    async function getDevices() {
+      try {
+        const { data } = await api.get("/devices");
 
-        response.data.forEach((device) => {
-          console.log(device);
-          if (device.status) {
-            markers.push({
-              id: device.id,
-              latlng: {
-                latitude: device.latitude,
-                longitude: device.longitude,
-              },
-            });
-          }
-        });
+        setMarkers(
+          data.map((device: any) => {
+            if (device.status === "ACTIVE") {
+              return {
+                id: device.id,
+                latlng: {
+                  latitude: device.latitude,
+                  longitude: device.longitude,
+                },
+              };
+            }
+          })
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-        setMarkers(markers);
-      })
-      .catch((error) => console.error(error));
+    getDevices();
   }, []);
 
   useEffect(() => {
