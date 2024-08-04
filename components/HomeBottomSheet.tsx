@@ -52,10 +52,18 @@ export default forwardRef(function HomeBottomSheet(
                   paddingHorizontal: 24,
                 }}
               >
-                <Text>Estações favoritas</Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 20,
+                  }}
+                >
+                  Estações favoritas
+                </Text>
                 <Text
                   style={{
                     color: "gray",
+                    fontSize: 12,
                   }}
                 >
                   Selecione uma estação para visualizar os detalhes.
@@ -92,6 +100,8 @@ export default forwardRef(function HomeBottomSheet(
                         <Text
                           style={{
                             color: "black",
+                            fontSize: 16,
+                            fontWeight: "bold",
                           }}
                         >
                           {item.name}
