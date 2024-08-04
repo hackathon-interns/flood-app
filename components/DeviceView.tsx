@@ -88,28 +88,14 @@ export default forwardRef(function DeviceView(
     setFavorite(!favorite);
   }
 
-  function teste(
-    value: number,
-    device: any,
-    deviceConfig: any,
-    deviceData: any
-  ) {
+  function getWaterLevelStatus(value: number, deviceData: any) {
     switch (value) {
       case 0:
-        return (
-          device + deviceData.distance_to_water >=
-          deviceConfig.normal_water_level
-        );
+        return deviceData.status == "danger" || "warning" || "normal";
       case 1:
-        return (
-          device + deviceData.distance_to_water >=
-          deviceConfig.alert_water_level
-        );
+        return deviceData.status == "danger" || "warning";
       case 2:
-        return (
-          device + deviceData.distance_to_water >=
-          deviceConfig.danger_water_level
-        );
+        return deviceData.status == "danger";
     }
   }
 
@@ -239,27 +225,21 @@ export default forwardRef(function DeviceView(
         >
           <Text
             style={{
-              color: teste(0, device, deviceConfig, deviceData)
-                ? "blue"
-                : "gray",
+              color: getWaterLevelStatus(0, deviceData) ? "blue" : "gray",
             }}
           >
             <FontAwesome6 name="droplet" size={80} />
           </Text>
           <Text
             style={{
-              color: teste(1, device, deviceConfig, deviceData)
-                ? "blue"
-                : "grey",
+              color: getWaterLevelStatus(1, deviceData) ? "blue" : "grey",
             }}
           >
             <FontAwesome6 name="droplet" size={80} />
           </Text>
           <Text
             style={{
-              color: teste(2, device, deviceConfig, deviceData)
-                ? "blue"
-                : "gray",
+              color: getWaterLevelStatus(2, deviceData) ? "blue" : "gray",
             }}
           >
             <FontAwesome6 name="droplet" size={80} />
