@@ -1,7 +1,5 @@
-import "../tamagui-web.css";
-
 import { useEffect } from "react";
-import { Pressable, useColorScheme } from "react-native";
+import { Pressable, useColorScheme, View } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -9,14 +7,13 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
-import { Provider } from "@/providers/Provider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
-import { View } from "tamagui";
 import { DrawerActions } from "@react-navigation/native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -32,19 +29,19 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [interLoaded, interError] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  const [loaded, error] = useFonts({
+    SpaceMono: require("@/assets/fonts/SpaceMono-Regular.ttf"),
+    ...FontAwesome.font,
   });
 
   useEffect(() => {
-    if (interLoaded || interError) {
+    if (loaded || error) {
       // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
       SplashScreen.hideAsync();
     }
-  }, [interLoaded, interError]);
+  }, [loaded, error]);
 
-  if (!interLoaded && !interError) {
+  if (!loaded && !error) {
     return null;
   }
 
@@ -56,55 +53,53 @@ function RootLayoutNav() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider>
-        <ThemeProvider value={DefaultTheme}>
-          <Drawer
-            screenOptions={{
-              headerShown: true,
-              headerTransparent: true,
-              headerTitleStyle: { display: "none" },
-              headerLeft: () => (
-                <Pressable
-                  onPress={() => {
-                    navigation.dispatch(DrawerActions.toggleDrawer());
-                  }}
-                >
-                  {({ pressed }) => (
-                    <View
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 1000,
-                        opacity: pressed ? 0.5 : 1,
-                        marginLeft: 24,
-                      }}
-                    >
-                      <Ionicons name="menu" size={36} color="black" />
-                    </View>
-                  )}
-                </Pressable>
-              ),
-              swipeEnabled: false,
-              sceneContainerStyle: { backgroundColor: "black" },
+      <ThemeProvider value={DefaultTheme}>
+        <Drawer
+          screenOptions={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitleStyle: { display: "none" },
+            headerLeft: () => (
+              <Pressable
+                onPress={() => {
+                  navigation.dispatch(DrawerActions.toggleDrawer());
+                }}
+              >
+                {({ pressed }) => (
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 1000,
+                      opacity: pressed ? 0.5 : 1,
+                      marginLeft: 24,
+                    }}
+                  >
+                    <Ionicons name="menu" size={36} color="black" />
+                  </View>
+                )}
+              </Pressable>
+            ),
+            swipeEnabled: false,
+            sceneContainerStyle: { backgroundColor: "black" },
+          }}
+        >
+          <Drawer.Screen
+            name="index" // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "Home",
+              title: "overview",
             }}
-          >
-            <Drawer.Screen
-              name="index" // This is the name of the page and must match the url from root
-              options={{
-                drawerLabel: "Home",
-                title: "overview",
-              }}
-            />
-            <Drawer.Screen
-              name="user" // This is the name of the page and must match the url from root
-              options={{
-                drawerLabel: "User",
-                title: "overview",
-              }}
-            />
-          </Drawer>
-        </ThemeProvider>
-      </Provider>
+          />
+          <Drawer.Screen
+            name="user" // This is the name of the page and must match the url from root
+            options={{
+              drawerLabel: "User",
+              title: "overview",
+            }}
+          />
+        </Drawer>
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }

@@ -5,7 +5,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { Pressable } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { H3, Paragraph, H4, View, Text } from "tamagui";
+import { View, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -17,13 +17,15 @@ import Reanimated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { forwardRef } from "react";
+import BottomSheetAddStationContent from "./BottomSheetAddContent";
 
 type HomeBottomSheetProps = {
   favoriteStations: any[];
+  isCreating: boolean;
 };
 
 export default forwardRef(function HomeBottomSheet(
-  { favoriteStations }: HomeBottomSheetProps,
+  { favoriteStations, isCreating }: HomeBottomSheetProps,
   bottomSheetRef: any
 ) {
   return (
@@ -34,93 +36,139 @@ export default forwardRef(function HomeBottomSheet(
         backgroundColor: "gray",
       }}
     >
-      <BottomSheetFlatList
-        data={favoriteStations}
-        contentContainerStyle={{
-          gap: 12,
-        }}
-        ListHeaderComponent={() => {
-          return (
-            <View gap="$1" paddingHorizontal="$6">
-              <H3 color="$black1">Estações favoritas</H3>
-              <Paragraph color="$gray7">
-                Selecione uma estação para visualizar os detalhes.
-              </Paragraph>
-            </View>
-          );
-        }}
-        renderItem={({ item }: { item: any }) => {
-          return (
-            <ReanimatedSwipeable
-              friction={2}
-              enableTrackpadTwoFingerGesture
-              rightThreshold={40}
-              renderRightActions={RightAction}
-            >
-              <Pressable onPress={() => console.log("ir para detalhes")}>
-                {({ pressed }) => (
-                  <View
-                    flexDirection="row"
-                    gap="$1"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    paddingHorizontal="$6"
-                    opacity={pressed ? 0.5 : 1}
-                  >
-                    <View flexDirection="column" alignItems="flex-start">
-                      <H4 color="$black1">{item.name}</H4>
-                      <Paragraph color="$gray7">{item.address}</Paragraph>
-                    </View>
+      {isCreating ? (
+        <BottomSheetAddStationContent />
+      ) : favoriteStations.length > 0 ? (
+        <BottomSheetFlatList
+          data={favoriteStations}
+          contentContainerStyle={{
+            gap: 12,
+          }}
+          ListHeaderComponent={() => {
+            return (
+              <View
+                style={{
+                  gap: 4,
+                  paddingHorizontal: 24,
+                }}
+              >
+                <Text>Estações favoritas</Text>
+                <Text
+                  style={{
+                    color: "gray",
+                  }}
+                >
+                  Selecione uma estação para visualizar os detalhes.
+                </Text>
+              </View>
+            );
+          }}
+          renderItem={({ item }: { item: any }) => {
+            return (
+              <ReanimatedSwipeable
+                friction={2}
+                enableTrackpadTwoFingerGesture
+                rightThreshold={40}
+                renderRightActions={RightAction}
+              >
+                <Pressable onPress={() => console.log("ir para detalhes")}>
+                  {({ pressed }) => (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 4,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingHorizontal: 24,
+                        opacity: pressed ? 0.5 : 1,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "black",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "gray",
+                          }}
+                        >
+                          {item.address}
+                        </Text>
+                      </View>
 
-                    <View flexDirection="row" gap="$2">
-                      <Text
-                        color={
-                          item.waterLevelStatus >= WaterLevelStatus.Normal
-                            ? "$blue10Light"
-                            : "$blue12Dark"
-                        }
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 4,
+                        }}
                       >
-                        <FontAwesome6 name="droplet" size={24} />
-                      </Text>
-                      <Text
-                        color={
-                          item.waterLevelStatus >= WaterLevelStatus.Warning
-                            ? "$blue10Light"
-                            : "$blue12Dark"
-                        }
-                      >
-                        <FontAwesome6 name="droplet" size={24} />
-                      </Text>
-                      <Text
-                        color={
-                          item.waterLevelStatus >= WaterLevelStatus.Danger
-                            ? "$blue10Light"
-                            : "$blue12Dark"
-                        }
-                      >
-                        <FontAwesome6 name="droplet" size={24} />
-                      </Text>
+                        <Text
+                          style={{
+                            color:
+                              item.waterLevelStatus >= WaterLevelStatus.Normal
+                                ? "blue"
+                                : "gray",
+                          }}
+                        >
+                          <FontAwesome6 name="droplet" size={24} />
+                        </Text>
+                        <Text
+                          style={{
+                            color:
+                              item.waterLevelStatus >= WaterLevelStatus.Warning
+                                ? "blue"
+                                : "gray",
+                          }}
+                        >
+                          <FontAwesome6 name="droplet" size={24} />
+                        </Text>
+                        <Text
+                          style={{
+                            color:
+                              item.waterLevelStatus >= WaterLevelStatus.Danger
+                                ? "blue"
+                                : "gray",
+                          }}
+                        >
+                          <FontAwesome6 name="droplet" size={24} />
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                )}
-              </Pressable>
-            </ReanimatedSwipeable>
-          );
-        }}
-      />
-      {favoriteStations.length === 0 && (
+                  )}
+                </Pressable>
+              </ReanimatedSwipeable>
+            );
+          }}
+        />
+      ) : (
         <BottomSheetView>
           <View
-            justifyContent="center"
-            alignItems="center"
-            gap="$2"
-            marginTop="$2"
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 8,
+            }}
           >
             <FontAwesome5 name="sad-tear" size={48} color="gray" />
-            <Paragraph col="$gray7" textAlign="center">
+            <Text
+              style={{
+                color: "gray",
+                textAlign: "center",
+              }}
+            >
               Selecione uma estação meteorológica ou favorite uma estação para
               habilitar o acesso rápido.
-            </Paragraph>
+            </Text>
           </View>
         </BottomSheetView>
       )}

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import MapView, { Region, Marker } from "react-native-maps";
 
@@ -8,11 +8,10 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 import BottomSheet from "@gorhom/bottom-sheet";
 
-import { View, Button, Tooltip } from "tamagui";
+import { FAB } from "@rneui/themed";
 
 import { WaterLevelStatus } from "@/enums/WaterLevelStatus";
 
-import { MapPin } from "@tamagui/lucide-icons";
 import { useNavigation } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HomeBottomSheet from "@/components/HomeBottomSheet";
@@ -35,6 +34,8 @@ export default function HomeScreen() {
       },
     },
   ]);
+
+  const [isCreating, setIsCreating] = useState(false);
 
   const locationOptions: LocationOptions = {
     accuracy: Location.LocationAccuracy.Balanced,
@@ -108,7 +109,7 @@ export default function HomeScreen() {
       headerRight: () => (
         <Pressable
           onPress={() => {
-            console.log("ADICIONAR ESTAÇÃO");
+            setIsCreating(true);
           }}
         >
           {({ pressed }) => (
@@ -232,19 +233,16 @@ export default function HomeScreen() {
       </MapView>
 
       <View style={styles.tooltipContainer}>
-        <Tooltip placement="right-end">
-          <Button
-            theme="blue"
-            icon={MapPin}
-            color="white"
-            circular
-            onPress={goToCurrentLocation}
-          />
-        </Tooltip>
+        <FAB
+          placement="right"
+          onPress={goToCurrentLocation}
+          icon={{ name: "add", color: "white" }}
+        />
       </View>
 
       <HomeBottomSheet
         favoriteStations={favoriteStations}
+        isCreating={isCreating}
         ref={bottomSheetRef}
       />
     </View>

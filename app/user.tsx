@@ -1,16 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  Label,
-  Separator,
-  Switch,
-  View,
-  XStack,
-  YStack,
-  Avatar,
-  Text,
-  SizeTokens,
-} from "tamagui";
+import { View, Text } from "react-native";
+import { Switch, Avatar } from "@rneui/themed";
 
 export default function UserPage() {
   const [userData, setUserData] = useState<any>(null);
@@ -29,84 +20,112 @@ export default function UserPage() {
   }, []);
 
   return (
-    <View paddingTop="$14">
+    <View
+      style={{
+        paddingTop: 40,
+      }}
+    >
       {userData ? (
         <>
-          <View justifyContent="center" alignItems="center" gap="$2">
-            <Avatar circular size="$6">
-              <Avatar.Image
-                src={userData.profile_img || "http://picsum.photos/200/300"}
-              />
-              <Avatar.Fallback bc="black" />
-            </Avatar>
-            <Text fontSize="$5" fontWeight="bold">
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <Avatar
+              size={64}
+              rounded
+              source={userData.profile_img || "http://picsum.photos/200/300"}
+            />
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "bold",
+              }}
+            >
               {userData.username || "Name"}
             </Text>
           </View>
 
-          <View gap="$1" paddingBottom="$4" paddingTop="$6">
-            <Label unstyled color={"white"} fontSize={"$4"} fontWeight="bold">
+          <View
+            style={{
+              gap: 2,
+              paddingBottom: 12,
+              paddingTop: 16,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
               E-mail
-            </Label>
-            <Text fontSize={"$3"}>{userData.email || "example@gmail.com"}</Text>
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+              }}
+            >
+              {userData.email || "example@gmail.com"}
+            </Text>
           </View>
 
-          <YStack width={400} alignItems="flex-start" gap="$3">
-            <XStack gap="$4" $xs={{ flexDirection: "column" }}>
-              <View gap="$1.5">
-                <Label
-                  unstyled
-                  color={"white"}
-                  fontSize={"$4"}
-                  fontWeight="bold"
+          <View
+            style={{
+              width: 400,
+              alignItems: "flex-start",
+              gap: 8,
+            }}
+          >
+            <View
+              style={{
+                gap: 16,
+                flexDirection: "column",
+              }}
+            >
+              <View
+                style={{
+                  gap: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
                 >
                   Notificar sensores favoritados?
-                </Label>
-                <SwitchWithLabel size="$2" defaultChecked />
+                </Text>
+                <Switch value={true} />
               </View>
 
-              <View gap="$1.5">
-                <Label
-                  unstyled
-                  color={"white"}
-                  fontSize={"$4"}
-                  fontWeight="bold"
+              <View
+                style={{
+                  gap: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
                 >
                   Notificar sensores novos perto da sua área?
-                </Label>
-                <SwitchWithLabel
-                  size="$2"
-                  defaultChecked={userData.notify_on_new_station}
-                />
+                </Text>
+                <Switch value={true} />
               </View>
-            </XStack>
-          </YStack>
+            </View>
+          </View>
         </>
       ) : (
         <Text>Carregando...</Text>
       )}
     </View>
   );
-
-  function SwitchWithLabel(props: {
-    size: SizeTokens;
-    defaultChecked?: boolean;
-  }) {
-    return (
-      <XStack width={200} alignItems="center" gap="$4">
-        <Switch size={props.size} defaultChecked={props.defaultChecked}>
-          <Switch.Thumb animation="quicker" />
-        </Switch>
-        <Separator minHeight={20} vertical />
-        <Label
-          padding="$0"
-          minWidth={90}
-          justifyContent="flex-end"
-          size={props.size}
-        >
-          {props.defaultChecked ? "Sim" : "Não"}
-        </Label>
-      </XStack>
-    );
-  }
 }
