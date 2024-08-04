@@ -85,15 +85,13 @@ export default function HomeScreen() {
 
         setMarkers(
           data.map((device: any) => {
-            if (device.status === "ACTIVE") {
-              return {
-                id: device.id,
-                latlng: {
-                  latitude: device.latitude,
-                  longitude: device.longitude,
-                },
-              };
-            }
+            return {
+              id: device.id,
+              latlng: {
+                latitude: device.latitude,
+                longitude: device.longitude,
+              },
+            };
           })
         );
       } catch (error) {
@@ -110,6 +108,7 @@ export default function HomeScreen() {
         <Pressable
           onPress={() => {
             setIsCreating(true);
+            snapToIndex(2);
           }}
         >
           {({ pressed }) => (
@@ -204,6 +203,10 @@ export default function HomeScreen() {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  const snapToIndex = (index: 0 | 1 | 2) => {
+    bottomSheetRef.current?.snapToIndex(index);
+  };
+
   function onSelectMarker(deviceId: any) {
     setSelectedDevice(deviceId);
   }
@@ -257,7 +260,9 @@ export default function HomeScreen() {
       <HomeBottomSheet
         favoriteStations={favoriteStations}
         isCreating={isCreating}
+        setIsCreating={setIsCreating}
         currentUserLocation={currentUserLocation}
+        snapToIndex={snapToIndex}
         selectDeviceId={selectDevice}
         ref={bottomSheetRef}
       />

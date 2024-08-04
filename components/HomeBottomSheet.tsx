@@ -24,6 +24,8 @@ type HomeBottomSheetProps = {
   favoriteStations: any[];
   isCreating: boolean;
   currentUserLocation: any;
+  snapToIndex: (index: 0 | 1 | 2) => void;
+  setIsCreating: (isCreating: boolean) => void;
   selectDeviceId: string;
 };
 
@@ -32,6 +34,8 @@ export default forwardRef(function HomeBottomSheet(
     favoriteStations,
     isCreating,
     currentUserLocation,
+    snapToIndex,
+    setIsCreating,
     selectDeviceId,
   }: HomeBottomSheetProps,
   bottomSheetRef: any
@@ -47,6 +51,8 @@ export default forwardRef(function HomeBottomSheet(
       {isCreating ? (
         <BottomSheetAddStationContent
           currentUserLocation={currentUserLocation}
+          snapToIndex={snapToIndex}
+          setIsCreating={setIsCreating}
         />
       ) : favoriteStations.length > 0 ? (
         <BottomSheetFlatList
