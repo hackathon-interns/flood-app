@@ -1,22 +1,30 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { Switch, Avatar } from "@rneui/themed";
+import api from "@/services/api";
 
 export default function UserPage() {
   const [userData, setUserData] = useState<any>(null);
+  const [notifyFavoriteSensors, setNotifyFavoriteSensors] =
+    useState<boolean>(false);
+  const [notifyNewStation, setNotifyNewStation] = useState<boolean>(false);
 
   useEffect(() => {
-    axios
-      .get(
-        "http://192.168.1.100:8080/api/users/2f7979a1-36fc-4054-833c-d6756b71e573"
-      )
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("ERRO:", error);
-      });
+    async function getUsers() {
+      try {
+        const { data } = await api.get(
+          "/users/3f3d3863-7843-4273-a786-0616ca29c2ea"
+        );
+
+        setUserData(data);
+        setNotifyFavoriteSensors(true);
+        setNotifyNewStation(data.notify_on_new_station || true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getUsers();
   }, []);
 
   return (
