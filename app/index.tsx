@@ -243,6 +243,7 @@ export default function HomeScreen() {
       <HomeBottomSheet
         favoriteStations={favoriteStations}
         isCreating={isCreating}
+        currentUserLocation={currentUserLocation}
         selectDeviceId={selectDevice}
         ref={bottomSheetRef}
       />

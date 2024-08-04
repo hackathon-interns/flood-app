@@ -23,11 +23,17 @@ import DeviceView from "./DeviceView";
 type HomeBottomSheetProps = {
   favoriteStations: any[];
   isCreating: boolean;
+  currentUserLocation: any;
   selectDeviceId: string;
 };
 
 export default forwardRef(function HomeBottomSheet(
-  { favoriteStations, isCreating, selectDeviceId }: HomeBottomSheetProps,
+  {
+    favoriteStations,
+    isCreating,
+    currentUserLocation,
+    selectDeviceId,
+  }: HomeBottomSheetProps,
   bottomSheetRef: any
 ) {
   return (
@@ -39,7 +45,9 @@ export default forwardRef(function HomeBottomSheet(
       }}
     >
       {isCreating ? (
-        <BottomSheetAddStationContent />
+        <BottomSheetAddStationContent
+          currentUserLocation={currentUserLocation}
+        />
       ) : favoriteStations.length > 0 ? (
         <BottomSheetFlatList
           data={favoriteStations}
@@ -69,6 +77,7 @@ export default forwardRef(function HomeBottomSheet(
                 <Text
                   style={{
                     color: "gray",
+                    fontSize: 12,
                   }}
                 >
                   {selectDeviceId ? (

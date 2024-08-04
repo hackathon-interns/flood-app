@@ -81,7 +81,6 @@ function RootLayoutNav() {
               </Pressable>
             ),
             swipeEnabled: false,
-            sceneContainerStyle: { backgroundColor: "black" },
           }}
         >
           <Drawer.Screen
