@@ -24,11 +24,14 @@ import Reanimated, {
 } from "react-native-reanimated";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { MapPin } from "@tamagui/lucide-icons";
+import { useNavigation } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function HomeScreen() {
   const [mapLocation, setMapLocation] = useState<Region>();
   const LATITUDE_DELTA = 0.0922;
   const LONGITUDE_DELTA = 0.0421;
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -42,6 +45,32 @@ export default function HomeScreen() {
       setMapLocation(currentLocation);
     })();
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => {
+            console.log("ADICIONAR ESTAÇÃO");
+          }}
+        >
+          {({ pressed }) => (
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 1000,
+                opacity: pressed ? 0.5 : 1,
+                marginRight: 24,
+              }}
+            >
+              <MaterialIcons name="add-location" size={36} color="black" />
+            </View>
+          )}
+        </Pressable>
+      ),
+    });
+  });
 
   const [favoriteStations, setFavoriteStations] = useState<any[]>([
     {

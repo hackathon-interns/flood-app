@@ -79,32 +79,7 @@ function RootLayoutNav() {
                         marginLeft: 24,
                       }}
                     >
-                      <Ionicons name="menu" size={36} color="white" />
-                    </View>
-                  )}
-                </Pressable>
-              ),
-              headerRight: () => (
-                <Pressable
-                  onPress={() => {
-                    console.log("ADICIONAR ESTAÇÃO");
-                  }}
-                >
-                  {({ pressed }) => (
-                    <View
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 1000,
-                        opacity: pressed ? 0.5 : 1,
-                        marginRight: 24,
-                      }}
-                    >
-                      <MaterialIcons
-                        name="add-location"
-                        size={36}
-                        color="white"
-                      />
+                      <Ionicons name="menu" size={36} color="black" />
                     </View>
                   )}
                 </Pressable>
