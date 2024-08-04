@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
-import { Switch, Avatar } from "@rneui/themed";
+import { Switch, Avatar, Input } from "@rneui/themed";
 import api from "@/services/api";
 
 export default function UserPage() {
