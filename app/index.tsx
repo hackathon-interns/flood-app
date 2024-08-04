@@ -43,17 +43,25 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    (async () => {
+    let teste: Location.LocationSubscription | null = null;
+
+    async function watchUserLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.error("Permission to access location was denied");
         return;
       }
 
-      await Location.watchPositionAsync(locationOptions, (pos) => {
+      teste = await Location.watchPositionAsync(locationOptions, (pos) => {
         setCurrentUserLocation(pos);
       });
-    })();
+    }
+
+    watchUserLocation();
+
+    return () => {
+      teste?.remove();
+    };
   }, []);
 
   useEffect(() => {
