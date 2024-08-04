@@ -198,6 +198,10 @@ export default function HomeScreen() {
     });
   }
 
+  function closeDevice() {
+    setSelectedDevice(null);
+  }
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   function onSelectMarker(deviceId: any) {
@@ -232,11 +236,21 @@ export default function HomeScreen() {
         ))}
       </MapView>
 
+      <View style={styles.tooltipContainer2}>
+        <FAB
+          placement="right"
+          onPress={closeDevice}
+          icon={{ name: "close", color: "white" }}
+          color="#3567cc"
+        />
+      </View>
+
       <View style={styles.tooltipContainer}>
         <FAB
           placement="right"
           onPress={goToCurrentLocation}
-          icon={{ name: "add", color: "white" }}
+          icon={{ name: "place", color: "white" }}
+          color="#3567cc"
         />
       </View>
 
@@ -261,7 +275,12 @@ const styles = StyleSheet.create({
   },
   tooltipContainer: {
     position: "absolute",
-    bottom: 200,
-    right: 20,
+    bottom: 175,
+    right: 10,
+  },
+  tooltipContainer2: {
+    position: "absolute",
+    bottom: 245,
+    right: 10,
   },
 });
