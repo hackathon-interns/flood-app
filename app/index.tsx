@@ -183,18 +183,6 @@ export default function HomeScreen() {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const [markers, setMarkers] = useState([
-    {
-      title: "hello",
-      description: "world",
-      latlng: { latitude: -23.5105, longitude: -47.60213 },
-    },
-    {
-      title: "hello2",
-      description: "world",
-      latlng: { latitude: -23.5105, longitude: -47.61513 },
-    },
-  ]);
   function onSelectMarker(event: any) {
     console.log(event.nativeEvent);
     setSelectedDevice(event.nativeEvent);
