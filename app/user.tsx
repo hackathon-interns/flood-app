@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
-import { Switch, Avatar, Input } from "@rneui/themed";
+import { Switch, Avatar } from "@rneui/themed";
 import api from "@/services/api";
 
 export default function UserPage() {
   const [userData, setUserData] = useState<any>(null);
   const [notifyFavoriteSensors, setNotifyFavoriteSensors] =
-    useState<boolean>(false);
-  const [notifyNewStation, setNotifyNewStation] = useState<boolean>(false);
+    useState<boolean>(true);
+  const [notifyNewStation, setNotifyNewStation] = useState<boolean>(true);
 
   useEffect(() => {
     async function getUsers() {
@@ -18,7 +18,7 @@ export default function UserPage() {
 
         setUserData(data);
         setNotifyFavoriteSensors(true);
-        setNotifyNewStation(data.notify_on_new_station || true);
+        setNotifyNewStation(data.notify_on_new_station ?? true);
       } catch (error) {
         console.error(error);
       }
@@ -28,11 +28,7 @@ export default function UserPage() {
   }, []);
 
   return (
-    <View
-      style={{
-        paddingTop: 40,
-      }}
-    >
+    <View style={{ paddingTop: 100, paddingLeft: 10 }}>
       {userData ? (
         <>
           <View
@@ -45,94 +41,42 @@ export default function UserPage() {
             <Avatar
               size={64}
               rounded
-              source={userData.profile_img || "http://picsum.photos/200/300"}
+              source={{ uri: userData.profile_img_url }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: "bold",
-              }}
-            >
-              {userData.username || "Name"}
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              {userData.username || "Nome"}
             </Text>
           </View>
 
-          <View
-            style={{
-              gap: 2,
-              paddingBottom: 12,
-              paddingTop: 16,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              E-mail
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-              }}
-            >
-              {userData.email || "example@gmail.com"}
+          <View style={{ gap: 0, paddingBottom: 16, paddingTop: 16 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>E-mail</Text>
+            <Text style={{ fontSize: 16 }}>
+              {userData.email || "exemplo@gmail.com"}
             </Text>
           </View>
 
-          <View
-            style={{
-              width: 400,
-              alignItems: "flex-start",
-              gap: 8,
-            }}
-          >
-            <View
-              style={{
-                gap: 16,
-                flexDirection: "column",
-              }}
-            >
-              <View
-                style={{
-                  gap: 6,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Notificar sensores favoritados?
-                </Text>
-                <Switch value={true} />
-              </View>
+          <View style={{ alignItems: "flex-start", paddingBottom: 16 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              Notificar sensores favoritados?
+            </Text>
+            <Switch
+              value={notifyFavoriteSensors}
+              onValueChange={setNotifyFavoriteSensors}
+            />
+          </View>
 
-              <View
-                style={{
-                  gap: 6,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Notificar sensores novos perto da sua área?
-                </Text>
-                <Switch value={true} />
-              </View>
-            </View>
+          <View style={{ alignItems: "flex-start", gap: 0 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              Notificar sensores novos perto da sua área?
+            </Text>
+            <Switch
+              value={notifyNewStation}
+              onValueChange={setNotifyNewStation}
+            />
           </View>
         </>
       ) : (
-        <Text>Carregando...</Text>
+        <Text style={{ padding: 20 }}>Carregando...</Text>
       )}
     </View>
   );
