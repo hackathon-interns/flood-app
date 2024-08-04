@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import MapView, { Region, Marker } from "react-native-maps";
 
 import * as Location from "expo-location";
+import { LocationOptions } from "expo-location";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -15,12 +16,31 @@ import { MapPin } from "@tamagui/lucide-icons";
 import { useNavigation } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HomeBottomSheet from "@/components/HomeBottomSheet";
+import axios from "axios";
 
 export default function HomeScreen() {
-  const [mapLocation, setMapLocation] = useState<Region>();
   const LATITUDE_DELTA = 0.0922;
   const LONGITUDE_DELTA = 0.0421;
   const navigation = useNavigation();
+  const [currentUserLocation, setCurrentUserLocation] = useState<any>();
+  const [mapLocation, setMapLocation] = useState<Region>();
+  const [selectDevice, setSelectedDevice] = useState<any>();
+  const [markers, setMarkers] = useState<any>([
+    {
+      id: 1,
+      latlng: {
+        latitude: 0,
+        longitude: 0,
+      },
+    },
+  ]);
+
+  const locationOptions: LocationOptions = {
+    accuracy: Location.LocationAccuracy.Balanced,
+    mayShowUserSettingsDialog: false,
+    timeInterval: 10000,
+    distanceInterval: 0,
+  };
 
   useEffect(() => {
     (async () => {
@@ -30,9 +50,34 @@ export default function HomeScreen() {
         return;
       }
 
-      let currentLocation = await getCurrentLocation();
-      setMapLocation(currentLocation);
+      await Location.watchPositionAsync(locationOptions, (pos) => {
+        setCurrentUserLocation(pos);
+      });
     })();
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.100:8080/api/devices")
+      .then((response) => {
+        let markers: any[] = [];
+
+        response.data.forEach((device) => {
+          console.log(device);
+          if (device.status) {
+            markers.push({
+              id: device.id,
+              latlng: {
+                latitude: device.latitude,
+                longitude: device.longitude,
+              },
+            });
+          }
+        });
+
+        setMarkers(markers);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
@@ -120,21 +165,19 @@ export default function HomeScreen() {
     },
   ]);
 
-  async function getCurrentLocation() {
-    let currentLocation = await Location.getCurrentPositionAsync();
-
+  async function setCurrentLocation(teste: any) {
     let location: Region = {
       latitudeDelta: LATITUDE_DELTA,
-      latitude: currentLocation.coords.latitude,
+      latitude: teste?.coords.latitude,
       longitudeDelta: LONGITUDE_DELTA,
-      longitude: currentLocation.coords.longitude,
+      longitude: teste?.coords.longitude,
     };
 
     return location;
   }
 
   async function goToCurrenLocation() {
-    let currentLocation = await getCurrentLocation();
+    let currentLocation = await setCurrentLocation(currentUserLocation);
     setMapLocation(currentLocation);
   }
 
@@ -152,6 +195,12 @@ export default function HomeScreen() {
       latlng: { latitude: -23.5105, longitude: -47.61513 },
     },
   ]);
+  function onSelectMarker(event: any) {
+    console.log(event.nativeEvent);
+    setSelectedDevice(event.nativeEvent);
+    console.log(selectDevice);
+  }
+
   return (
     <View
       style={{
@@ -167,9 +216,9 @@ export default function HomeScreen() {
         {markers.map((marker, index) => (
           <Marker
             key={index}
+            id={marker.id}
             coordinate={marker.latlng}
-            title={marker.title}
-            description={marker.description}
+            onPress={onSelectMarker}
           >
             <FontAwesome6
               name="house-flood-water"
