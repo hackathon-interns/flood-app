@@ -43,7 +43,7 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    let teste: Location.LocationSubscription | null = null;
+    let locationSubscription: Location.LocationSubscription | null = null;
 
     async function watchUserLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -52,15 +52,18 @@ export default function HomeScreen() {
         return;
       }
 
-      teste = await Location.watchPositionAsync(locationOptions, (pos) => {
-        setCurrentUserLocation(pos);
-      });
+      locationSubscription = await Location.watchPositionAsync(
+        locationOptions,
+        (pos) => {
+          setCurrentUserLocation(pos);
+        }
+      );
     }
 
     watchUserLocation();
 
     return () => {
-      teste?.remove();
+      locationSubscription?.remove();
     };
   }, []);
 
