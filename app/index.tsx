@@ -10,10 +10,21 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { View, Button, Tooltip } from "tamagui";
 import { MapPin } from "@tamagui/lucide-icons";
 
+import axios from "axios";
+
 export default function HomeScreen() {
   const [mapLocation, setMapLocation] = useState<Region>();
   const LATITUDE_DELTA = 0.0922;
   const LONGITUDE_DELTA = 0.0421;
+  const [markers, setMarkers] = useState<any>([
+    {
+      title: "",
+      latlng: {
+        latitude: 0,
+        longitude: 0,
+      },
+    },
+  ]);
 
   useEffect(() => {
     (async () => {
@@ -26,6 +37,29 @@ export default function HomeScreen() {
       let currentLocation = await getCurrentLocation();
       setMapLocation(currentLocation);
     })();
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.106:8080/api/devices")
+      .then((response) => {
+        let markers: any[] = [];
+
+        response.data.forEach((device) => {
+          if (device.status) {
+            markers.push({
+              title: device.code,
+              latlng: {
+                latitude: device.latitude,
+                longitude: device.longitude,
+              },
+            });
+          }
+        });
+
+        setMarkers(markers);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   async function getCurrentLocation() {
@@ -54,18 +88,6 @@ export default function HomeScreen() {
     console.log("handleSheetChanges", index);
   }, []);
 
-  const [markers, setMarkers] = useState([
-    {
-      title: "hello",
-      description: "world",
-      latlng: { latitude: -23.5105, longitude: -47.60213 },
-    },
-    {
-      title: "hello2",
-      description: "world",
-      latlng: { latitude: -23.5105, longitude: -47.61513 },
-    },
-  ]);
   return (
     <View
       style={{
